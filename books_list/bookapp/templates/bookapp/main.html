@@ -1,0 +1,112 @@
+{% load static %}
+{% load custom_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книги</title>
+    <link rel="stylesheet" href="{% static 'bookapp/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'bookapp/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        
+        <h1 class="title_1">Список книг</h1>
+        
+        <div class="page_block flex">
+            <div class="left">
+                <div class="table">
+                    <div class="tr flex">
+                        {% for profile in profiles %}
+                            {% if profile.is_visible %}
+                                <div class="td flex"><p class="section_dscr td_desc">{{ profile.column_name }}</p></div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="td"></div>
+                        <div class="td"></div>
+                    </div>
+                    {% for book in books %}
+                        <div class="tr flex">
+                            {% for info in book %}
+                                {% if info.is_visible %}
+                                    <div class="td flex"><p class="section_dscr td_desc">{{ info.column_value }}</p></div>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="td2">
+                                <p class="section_dscr">
+                                    <a href="{% url 'bookapp:book_action' pk=book.0.column_value action='update'%}">
+                                        <button class="btn_reset btn">Изменить</button>
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="td2">
+                                <p class="section_dscr">
+                                    <a href="{% url 'bookapp:book_action' pk=book.0.column_value action='del' %}">
+                                        <button class="btn_reset btn">Удалить</button>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="rigth">
+                <!-- {% profiles_form profiles %} -->
+
+                <div class="create_block">
+                    <a href="{% url 'bookapp:book_create' action='create' %}">
+                        <button type="button" class="btn_reset btn">
+                            Добавить книгу
+                        </button>
+                    </a>
+                </div>
+
+                <br>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                        <legend>Форма скрытия столбцов</legend>
+                        <div>
+                            {% for profile in profiles %}
+                                <div class="profile_block">
+                                    <p class="section_dscr">{{ profile.column_name }}</p>
+                                    {% if profile.is_visible %}
+                                        <input type="radio" id="{{ profile.column_name }}" name="{{ profile.column_name }}" value="True" checked>
+                                        <label for="+{{ profile.column_name }}">Видимый</label>
+                
+                                        <input type="radio" id="_{{ profile.column_name }}" name="{{ profile.column_name }}" value="False">
+                                        <label for="_{{ profile.column_name }}">Скрытый</label>
+                                    {% else %}
+                                        <input type="radio" id="{{ profile.column_name }}2" name="{{ profile.column_name }}" value="True">
+                                        <label for="{{ profile.column_name }}2">Видимый</label>
+                
+                                        <input type="radio" id="_{{ profile.column_name }}2" name="{{ profile.column_name }}" value="False" checked>
+                                        <label for="-{{ profile.column_name }}2">Скрытый</label>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="create_block">
+                            <button type="submit" class="btn_reset btn">Применить</button>
+                        </div>
+                    </fieldset>
+                </form>
+
+                <p class="section_dscr">или ч/з отдельную страницу</p>
+                
+                <div class="create_block">
+                    <a href="{% url 'bookapp:update_profiles' %}">
+                        <button type="button" class="btn_reset btn">
+                            Управления видимостью
+                        </button>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

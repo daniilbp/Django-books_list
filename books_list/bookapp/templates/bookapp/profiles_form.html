@@ -1,0 +1,64 @@
+{% load static %}
+{% load custom_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменение видимости</title>
+    <link rel="stylesheet" href="{% static 'bookapp/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'bookapp/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="page_block">
+            {% if flag == 'error' %}
+                <h1>Ошибка заполнения формы</h1>
+            {% else %}
+                <h1>Изменение видимости колонок книг</h1>
+            {% endif %}
+
+
+            <div>
+                <form method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                        <legend>Форма скрытия столбцов</legend>
+                        <div>
+                            {% for profile in profiles %}
+                                <div class="profile_block">
+                                    <p>{{ profile.column_name }}</p>
+                                    {% if profile.is_visible %}
+                                        <input type="radio" id="{{ profile.column_name }}" name="{{ profile.column_name }}" value="True" checked>
+                                        <label for="+{{ profile.column_name }}">Видимый</label>
+                
+                                        <input type="radio" id="_{{ profile.column_name }}" name="{{ profile.column_name }}" value="False">
+                                        <label for="_{{ profile.column_name }}">Скрытый</label>
+                                    {% else %}
+                                        <input type="radio" id="{{ profile.column_name }}2" name="{{ profile.column_name }}" value="True">
+                                        <label for="{{ profile.column_name }}2">Видимый</label>
+                
+                                        <input type="radio" id="_{{ profile.column_name }}2" name="{{ profile.column_name }}" value="False" checked>
+                                        <label for="-{{ profile.column_name }}2">Скрытый</label>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <button type="submit" class="btn_reset btn">Применить</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div>
+                <a href="{% url 'bookapp:books' %}">
+                    <button class="btn_reset btn">
+                        Вернуться к списку книг
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
